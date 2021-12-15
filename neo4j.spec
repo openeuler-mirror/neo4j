@@ -1,11 +1,12 @@
 %global debug_package %{nil}
 Name:                neo4j
 Version:             4.3.0
-Release:             1
+Release:             2
 Summary:             Graphs for Everyone
 License:             GPLv3
 URL:                 https://neo4j.com/
 Source0:             https://github.com/neo4j/neo4j/archive/%{version}.tar.gz
+Patch0:              fix-cypher-shell-pom.patch
 BuildRequires:       java-11-openjdk-devel maven gradle-local maven-local
 Requires:            java-11-openjdk-devel
 BuildArch:           noarch
@@ -16,6 +17,7 @@ a friendly query language and ACID transactions.
 
 %prep
 %setup -qn %{name}-%{version}
+%patch0 -p1
 
 %build
 export LC_ALL=en_US.UTF-8
@@ -119,5 +121,8 @@ popd
 %{_datadir}/maven-metadata/%{name}.xml
 
 %changelog
+* Tue Dec 14 2021 wangkai <wangkai385@huawei.com> - 4.3.0-2
+- fix cypher-shell pom
+
 * Wed Jul 14 2021 liyanan <liyanan32@huawei.com> - 4.3.0-1
 - package init

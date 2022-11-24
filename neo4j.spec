@@ -1,11 +1,15 @@
 %global debug_package %{nil}
 Name:                neo4j
 Version:             4.3.0
-Release:             2
+Release:             3
 Summary:             Graphs for Everyone
 License:             GPLv3
 URL:                 https://neo4j.com/
 Source0:             https://github.com/neo4j/neo4j/archive/%{version}.tar.gz
+# Maven dependencies we use to speedup build on OBS.
+Source1:             Saxon-HE.tar.gz
+Source2:             scala-compiler.tar.gz
+Source3:             scala-library.tar.gz
 Patch0:              fix-cypher-shell-pom.patch
 BuildRequires:       java-11-openjdk-devel maven gradle-local maven-local
 Requires:            java-11-openjdk-devel
@@ -18,6 +22,11 @@ a friendly query language and ACID transactions.
 %prep
 %setup -qn %{name}-%{version}
 %patch0 -p1
+
+mkdir -p /home/abuild/.m2/repository/
+tar -zxvf %{SOURCE1} -C /home/abuild/.m2/repository/
+tar -zxvf %{SOURCE2} -C /home/abuild/.m2/repository/
+tar -zxvf %{SOURCE3} -C /home/abuild/.m2/repository/
 
 %build
 export LC_ALL=en_US.UTF-8
@@ -121,6 +130,9 @@ popd
 %{_datadir}/maven-metadata/%{name}.xml
 
 %changelog
+* Thu Nov 24 2022 misaka00251 <liuxin@iscas.ac.cn> - 4.3.0-3
+- Fix build on OBS
+
 * Tue Dec 14 2021 wangkai <wangkai385@huawei.com> - 4.3.0-2
 - fix cypher-shell pom
 
